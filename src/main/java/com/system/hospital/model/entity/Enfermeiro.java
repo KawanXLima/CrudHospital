@@ -16,20 +16,19 @@ public class Enfermeiro implements Serializable {
     private Integer id;
 
     @Column(nullable = false, length = 160)
-    @NotNull
     private String nome;
 
     @Column (nullable = false)
-    @NotNull
     private Integer idade;
 
     @Column (nullable = false, length = 11)
-    @NotNull
     private String cpf;
 
     @Column (nullable = false, length = 8)
-    @NotNull
     private String num_carteira;
+
+    public Enfermeiro() {
+    }
 
     //@Column
     //private Hospital hospital; (Entidade hospital ainda não existente)

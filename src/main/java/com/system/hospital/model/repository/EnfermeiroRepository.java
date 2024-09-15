@@ -6,7 +6,5 @@ import java.util.Optional;
 
 
 public interface EnfermeiroRepository extends JpaRepository<Enfermeiro, Integer> {
-    @Override
-    Optional<Enfermeiro> findById(Integer id);
 }
 

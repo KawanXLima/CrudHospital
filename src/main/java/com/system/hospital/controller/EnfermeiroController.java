@@ -23,7 +23,7 @@ public class EnfermeiroController {
 
     private final Logger logger = LoggerFactory.getLogger(EnfermeiroController.class);
 
-    @PostMapping
+    @PostMapping("/Cadastrar")
     public ResponseEntity<Enfermeiro> cadastroEnfermeiro(@RequestBody Enfermeiro enfermeiro) {
         try {
             Enfermeiro savedEnfermeiro = repository.save(enfermeiro);
@@ -36,7 +36,45 @@ public class EnfermeiroController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Enfermeiro> buscarPorId(@PathVariable Integer id) {
-        Enfermeiro enfermeiro = service.encontrarPorID(id);
-        return ResponseEntity.ok(enfermeiro);
+      try {
+          Enfermeiro enfermeiro = service.encontrarPorID(id);
+          return ResponseEntity.ok(enfermeiro);
+      } catch (Exception e) {
+          logger.error("Enfermeiro nao encontrado: " + e.getMessage(), e);
+          return ResponseEntity.notFound().build();
+      }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarEnfermeiro(@PathVariable Integer id) {
+        try {
+            if (repository.existsById(id)) {
+                repository.deleteById(id);
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            logger.error("Erro ao deletar enfermeiro: " + e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Enfermeiro> atualizarEnfermeiro(@PathVariable Integer id, @RequestBody Enfermeiro enfermeiro) {
+        try {
+            if (repository.existsById(id)) {
+                enfermeiro.setId(id); // Garante que o ID é mantido
+                Enfermeiro updatedEnfermeiro = repository.save(enfermeiro);
+                return ResponseEntity.ok(updatedEnfermeiro);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            logger.error("Erro ao atualizar enfermeiro: " + e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
 }
