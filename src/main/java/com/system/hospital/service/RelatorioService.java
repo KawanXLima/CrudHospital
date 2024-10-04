@@ -1,5 +1,7 @@
 package com.system.hospital.service;
 
+import com.system.hospital.model.DTOs.RelatorioAddDTO;
+import com.system.hospital.model.entity.Enfermeiro;
 import com.system.hospital.model.entity.Relatorio;
 import com.system.hospital.model.repository.RelatorioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,14 @@ public class RelatorioService {
     @Autowired
     private RelatorioRepository repository;
 
-    public Relatorio createRelatorio(Relatorio relatorio){
+    @Autowired
+    private EnfermeiroService service;
+
+    public Relatorio createRelatorio(RelatorioAddDTO relatorioAddDTO){
+        Enfermeiro enfermeiro = service.encontrarPorID(relatorioAddDTO.getEnfermeiro_id());
+        Relatorio relatorio = new Relatorio();
+        relatorio.setObservacao(relatorioAddDTO.getObservacao());
+        relatorio.setEnfermeiro(enfermeiro);
         return repository.save(relatorio);
     }
 
@@ -30,7 +39,6 @@ public class RelatorioService {
         Optional<Relatorio> optionalRelatorio = repository.findById(id);
         if(optionalRelatorio.isPresent()) {
             Relatorio findedRelatorio = optionalRelatorio.get();
-            findedRelatorio.setEnfermeiro(relatorio.getEnfermeiro());
             findedRelatorio.setObservacao(relatorio.getObservacao());
             return repository.save(findedRelatorio);
         } else{
