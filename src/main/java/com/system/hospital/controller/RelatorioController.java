@@ -1,5 +1,6 @@
 package com.system.hospital.controller;
 
+import com.system.hospital.model.DTOs.RelatorioAddDTO;
 import com.system.hospital.model.entity.Relatorio;
 import com.system.hospital.service.RelatorioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,8 @@ public class RelatorioController {
     private RelatorioService relatorioService;
 
     @PostMapping
-    public ResponseEntity<Relatorio> createRelatorio(@RequestBody Relatorio relatorio){
-        Relatorio savedRelatorio = relatorioService.createRelatorio(relatorio);
+    public ResponseEntity<Relatorio> createRelatorio(@RequestBody RelatorioAddDTO relatorioAddDTO){
+        Relatorio savedRelatorio = relatorioService.createRelatorio(relatorioAddDTO);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedRelatorio.getId()).toUri();
         return ResponseEntity.created(location).body(savedRelatorio);
     }
