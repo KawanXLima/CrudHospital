@@ -3,12 +3,20 @@ package com.system.hospital.model.entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.NotNull;
+
+import java.io.Serial;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_hospital")
-
 public class Hospital implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -2530536440519544967L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("_id")
@@ -20,8 +28,8 @@ public class Hospital implements Serializable {
     @Column(nullable = false, length = 160)
     private String endereco;
 
-
-    //lista de enfermeiros nao implementada
+    @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY)
+    private Set<Enfermeiro> enfermeiroSet = new HashSet<Enfermeiro>();
 
     public Hospital() {
     }
@@ -53,6 +61,27 @@ public class Hospital implements Serializable {
 
     public void setEndereco(String endereco) {
         this.endereco = endereco;
+    }
+
+    public Set<Enfermeiro> getEnfermeiroSet() {
+        return enfermeiroSet;
+    }
+
+    public void setEnfermeiroSet(Enfermeiro enfermeiro) {
+        this.enfermeiroSet.add(enfermeiro);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Hospital hospital = (Hospital) o;
+        return Objects.equals(id, hospital.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
 
