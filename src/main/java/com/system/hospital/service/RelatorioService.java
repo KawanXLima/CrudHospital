@@ -25,7 +25,6 @@ public class RelatorioService {
         relatorio.setEnfermeiro(enfermeiro);
         return repository.save(relatorio);
     }
-
     public Relatorio readRelatorio(Integer id){
         Optional<Relatorio> optionalRelatorio = repository.findById(id);
         if(optionalRelatorio.isPresent()){
@@ -34,7 +33,6 @@ public class RelatorioService {
             throw new RuntimeException("Relatório não encontrado");
         }
     }
-
     public Relatorio updateRelatorio(Integer id, Relatorio relatorio){
         Optional<Relatorio> optionalRelatorio = repository.findById(id);
         if(optionalRelatorio.isPresent()) {
@@ -45,7 +43,6 @@ public class RelatorioService {
             throw new RuntimeException("Relatório não encontrado");
         }
     }
-
     public void deleteRelatorio(Integer id){
         if(repository.existsById(id)){
             repository.deleteById(id);
