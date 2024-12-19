@@ -22,7 +22,7 @@ public class EnfermeiroController {
 
     private final Logger logger = LoggerFactory.getLogger(EnfermeiroController.class);
 
-    //Cadastro de Enfermeiros
+    //Cadastra de Enfermeiros
     @PostMapping("/Cadastrar")
     public ResponseEntity<Enfermeiro> cadastroEnfermeiro(@RequestBody EnfermeiroAddDTO enfermeiro) {
         try {
@@ -33,9 +33,9 @@ public class EnfermeiroController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    //Busca de Enfermeiros por ID
+    //Busca Enfermeiros por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Enfermeiro> readRelatorio(@PathVariable Integer id){
+    public ResponseEntity<Enfermeiro> readEnfermeiro(@PathVariable Integer id){
         try{
             Enfermeiro enfermeiro = service.readEnfermeiro(id);
             return ResponseEntity.ok(enfermeiro);
@@ -44,9 +44,9 @@ public class EnfermeiroController {
             return ResponseEntity.notFound().build();
         }
     }
-    //Edita as informações de Enfermeiro
+    //Edita as informações de Enfermeiro por ID
     @PutMapping("/{id}")
-    public ResponseEntity<Enfermeiro> updateRelatorio(@PathVariable Integer id, @RequestBody EnfermeiroAddDTO enfermeiroDTO) {
+    public ResponseEntity<Enfermeiro> updateEnfermeiro(@PathVariable Integer id, @RequestBody EnfermeiroAddDTO enfermeiroDTO) {
         try {
             Enfermeiro updatedEnfermeiro = service.updateEnfermeiro(id, enfermeiroDTO);
             return ResponseEntity.ok(updatedEnfermeiro);
@@ -55,7 +55,7 @@ public class EnfermeiroController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-    //Deleta Enfermeiro
+    //Deleta Enfermeiro por ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEnfermeiro(@PathVariable Integer id){
         try{

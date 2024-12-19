@@ -1,5 +1,7 @@
 package com.system.hospital.controller;
 
+import com.system.hospital.model.DTOs.EnfermeiroAddDTO;
+import com.system.hospital.model.DTOs.HospitalAddDTO;
 import com.system.hospital.model.entity.Enfermeiro;
 import com.system.hospital.model.entity.Hospital;
 import com.system.hospital.model.repository.HospitalRepository;
@@ -18,64 +20,50 @@ import com.system.hospital.model.repository.HospitalRepository;
 @RestController
 @RequestMapping("/hospital")
 public class HospitalController {
-    @Autowired
-    HospitalService hospitalService;
 
     @Autowired
-    private HospitalRepository hospitalRepository;
+    HospitalService service;
 
     private final Logger logger = LoggerFactory.getLogger(HospitalController.class);
 
     @PostMapping("/Cadastrar")
-    public ResponseEntity<Hospital> cadastrarHospital(@RequestBody Hospital hospital) {
-    try{
-        Hospital savedHospital =  hospitalRepository.save(hospital);
-        return new ResponseEntity<>(savedHospital, HttpStatus.CREATED);
-    } catch (Exception e) {
-        logger.error("Erro ao cadastrar enfermeiro: " + e.getMessage(), e);
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-}
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Hospital> buscarPorId(@PathVariable Integer id) {
+    public ResponseEntity<Hospital> cadastroHospital(@RequestBody HospitalAddDTO hospital) {
         try {
-            Hospital hospital = hospitalService.encontrarPorId(id);
-            return ResponseEntity.ok(hospital);
+            Hospital savedHospital = service.createHospital(hospital);
+            return new ResponseEntity<>(savedHospital, HttpStatus.CREATED);
         } catch (Exception e) {
-            logger.error("Hospital nao encontrado: " + e.getMessage(), e);
+            logger.error("Erro ao cadastrar enfermeiro: " + e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<Hospital> readHospital(@PathVariable Integer id){
+        try{
+            Hospital hospital = service.readHospital(id);
+            return ResponseEntity.ok(hospital);
+        } catch (RuntimeException e){
+            System.err.println("Erro: "+ e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarHospital(@PathVariable Integer id) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Hospital> updateHospital(@PathVariable Integer id, @RequestBody HospitalAddDTO hospitalAddDTO) {
         try {
-            if (hospitalRepository.existsById(id)) {
-                hospitalRepository.deleteById(id);
-                return ResponseEntity.noContent().build();
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            logger.error("Erro ao deletar hospital: " + e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            Hospital updatedHospital = service.updateHospital(id, hospitalAddDTO);
+            return ResponseEntity.ok(updatedHospital);
+        } catch (RuntimeException e) {
+            System.err.println("Erro: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Hospital> atualizarHospital(@PathVariable Integer id, @RequestBody Hospital hospital) {
-        try {
-            if (hospitalRepository.existsById(id)) {
-                hospital.setId(id); // Garante que o ID é mantido
-                Hospital updatedHospital = hospitalRepository.save(hospital);
-                return ResponseEntity.ok(updatedHospital);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            logger.error("Erro ao atualizar Hospital: " + e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteHospital(@PathVariable Integer id){
+        try{
+            service.deleteHospital(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e){
+            System.err.println("Erro: "+e.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 }
